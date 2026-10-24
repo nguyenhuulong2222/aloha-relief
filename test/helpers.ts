@@ -96,6 +96,12 @@ export const TEST_CONFIG = {
   NODE_ENV: "test" as const,
 };
 
+/** Background work (AI triage) started by any test app; drained before a test closes its database. */
+const allPending: Promise<unknown>[] = [];
+export async function settleBackground() {
+  await Promise.allSettled(allPending.splice(0));
+}
+
 export function makeApp(
   db: Db,
   pp: PayPalClient,
@@ -107,7 +113,10 @@ export function makeApp(
     pp,
     provider,
     config: TEST_CONFIG,
-    background: (p) => pending.push(p),
+    background: (p) => {
+      pending.push(p);
+      allPending.push(p);
+    },
   });
   return { app, settle: () => Promise.all(pending.splice(0)) };
 }

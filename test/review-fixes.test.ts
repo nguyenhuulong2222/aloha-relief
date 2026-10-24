@@ -14,6 +14,7 @@ import {
   makeApp,
   makeDb,
   paypalError,
+  settleBackground,
   VALID_REQUEST,
 } from "./helpers.js";
 
@@ -48,7 +49,10 @@ beforeEach(async () => {
   }));
   await fundWith(db, 200_000);
 });
-afterEach(async () => db.close());
+afterEach(async () => {
+  await settleBackground();
+  await db.close();
+});
 
 it("the HTTP approve path enforces the configured per-grant cap", async () => {
   const { app, settle } = makeApp(db, pp);

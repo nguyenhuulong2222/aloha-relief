@@ -7,6 +7,7 @@ import {
   fundWith,
   makeApp,
   makeDb,
+  settleBackground,
   VALID_REQUEST,
 } from "./helpers.js";
 
@@ -27,7 +28,10 @@ beforeEach(async () => {
   }));
   harness = makeApp(db, pp);
 });
-afterEach(async () => db.close());
+afterEach(async () => {
+  await settleBackground();
+  await db.close();
+});
 
 const json = (body: unknown, headers: Record<string, string> = {}) => ({
   method: "POST",
