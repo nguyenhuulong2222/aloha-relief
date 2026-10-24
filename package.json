@@ -1,0 +1,44 @@
+{
+  "name": "aloha-relief",
+  "version": "0.1.0",
+  "description": "Supervised disaster micro-grants on PayPal: rules check, AI explains, people decide.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "bash scripts/dev.sh",
+    "start": "node dist/server.js",
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run",
+    "migrate": "tsx src/db/migrate.ts",
+    "seed": "tsx scripts/seed.ts"
+  },
+  "author": "Long Huu Nguyen",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
+    "@hono/node-server": "^2.1.5",
+    "hono": "^4.13.13",
+    "postgres": "^3.4.9",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.2",
+    "@electric-sql/pglite": "^0.5.11",
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "@types/node": "^26.6.5",
+    "ag-grid-community": "^36.2.0",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.12"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  }
+}

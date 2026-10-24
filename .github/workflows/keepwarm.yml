@@ -1,0 +1,23 @@
+name: Keep demo warm
+
+# Render free web services sleep after 15 idle minutes. Ping the hosted demo every 10 minutes
+# through the end of judging (Dec 15, 2026), then stop on its own.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping /health
+        env:
+          DEMO_URL: ${{ vars.DEMO_URL }}
+        run: |
+          if [ "$(date -u +%Y%m%d)" -gt 20261216 ]; then echo "Judging is over; skipping."; exit 0; fi
+          if [ -z "$DEMO_URL" ]; then echo "DEMO_URL repo variable not set; skipping."; exit 0; fi
+          curl -fsS --max-time 90 --retry 2 "$DEMO_URL/health"
