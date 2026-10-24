@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { Db } from "./db/index.js";
 import { log } from "./http/log.js";
 import { type PayPalClient, PayPalError } from "./paypal/client.js";
@@ -31,7 +32,11 @@ export async function startDonation(db: Db, pp: PayPalClient, amountCents: numbe
     `select 'D-' || lpad(nextval('donation_ref_seq')::text, 4, '0') as ref`,
   );
   const ref = seq!.ref;
-  const order = await createDonationOrder(pp, { amountCents, donationRef: ref });
+  const order = await createDonationOrder(pp, {
+    amountCents,
+    donationRef: ref,
+    requestKey: randomUUID(),
+  });
   await db.query(
     `insert into donations (public_ref, paypal_order_id, amount_cents, status) values ($1, $2, $3, 'created')`,
     [ref, order.id, amountCents],

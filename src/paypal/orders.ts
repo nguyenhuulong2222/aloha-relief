@@ -23,11 +23,13 @@ export interface CreatedOrder {
 
 export async function createDonationOrder(
   pp: PayPalClient,
-  args: { amountCents: number; donationRef: string },
+  // requestKey must be unique per order forever: donation refs restart after the nightly demo reset,
+  // and PayPal rejects a reused PayPal-Request-Id with a different body (422).
+  args: { amountCents: number; donationRef: string; requestKey: string },
 ): Promise<CreatedOrder> {
   return pp.request<CreatedOrder>("/v2/checkout/orders", {
     method: "POST",
-    requestId: `order-${args.donationRef}`,
+    requestId: `order-${args.requestKey}`,
     body: {
       intent: "CAPTURE",
       purchase_units: [

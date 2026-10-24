@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { runTriage } from "../src/ai/triage.js";
 import type { Db } from "../src/db/index.js";
 import { runNightlyIfDue, seedDemo } from "../src/demo.js";
+import { startDonation } from "../src/donations.js";
 import { recordDecision } from "../src/grants/decide.js";
 import { payApprovedGrant } from "../src/grants/payout-guard.js";
 import { submitRequest } from "../src/requests.js";
@@ -220,6 +221,21 @@ describe("nightly demo reset", () => {
 
     expect(await runNightlyIfDue({ ...deps, now: at("2026-11-03T09:59:00Z") })).toBe(false); // still Nov 2 in HST
     expect(await runNightlyIfDue({ ...deps, now: at("2026-11-03T10:01:00Z") })).toBe(true);
+  });
+
+  it("gives each PayPal order a fresh request ID even when donation refs restart after a reset", async () => {
+    let o = 0;
+    pp.on("POST", "/v2/checkout/orders", () => ({ id: `ORDER-${++o}`, status: "CREATED" }));
+    await runNightlyIfDue({ db, now: () => new Date("2026-11-01T10:30:00Z") });
+    const before = await startDonation(db, pp, 2500);
+    await runNightlyIfDue({ db, now: () => new Date("2026-11-02T10:30:00Z") });
+    const after = await startDonation(db, pp, 2500);
+    expect(after.ref).toBe(before.ref);
+    const ids = pp.calls
+      .filter((c) => c.path === "/v2/checkout/orders")
+      .map((c) => c.req.requestId);
+    expect(ids).toHaveLength(2);
+    expect(ids[0]).not.toBe(ids[1]);
   });
 
   it("warns when the balance can't be read", async () => {
