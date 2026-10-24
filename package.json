@@ -14,7 +14,8 @@
     "lint:fix": "biome check --write .",
     "test": "vitest run",
     "migrate": "tsx src/db/migrate.ts",
-    "seed": "tsx scripts/seed.ts"
+    "seed": "tsx scripts/seed.ts",
+    "deploy": "bash scripts/render.sh"
   },
   "author": "Long Huu Nguyen",
   "license": "MIT",

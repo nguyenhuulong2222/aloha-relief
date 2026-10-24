@@ -262,7 +262,7 @@ textarea {
   width: 100%;
   min-height: 44px;
   padding: 10px 12px;
-  border: 1.5px solid #8a9a9f;
+  border: 1.5px solid #6f8085;
   border-radius: var(--radius-s);
   background: var(--surface);
   color: var(--basalt);
@@ -288,7 +288,7 @@ fieldset {
   gap: 8px;
   min-height: 44px;
   padding: 8px 14px;
-  border: 1.5px solid #8a9a9f;
+  border: 1.5px solid #6f8085;
   border-radius: var(--radius-s);
   background: var(--surface);
   font-weight: 400;
@@ -703,7 +703,7 @@ fieldset {
 .applicant {
   white-space: pre-wrap;
   background: var(--ash);
-  border: 1px dashed #8a9a9f;
+  border: 1px dashed #6f8085;
   padding: 12px 14px;
   margin: 8px 0 0;
   overflow-wrap: anywhere;
@@ -788,7 +788,7 @@ fieldset {
 }
 .seg {
   display: inline-flex;
-  border: 1.5px solid #8a9a9f;
+  border: 1.5px solid #6f8085;
   border-radius: var(--radius-s);
   overflow: hidden;
   background: var(--surface);
@@ -803,7 +803,7 @@ fieldset {
   cursor: pointer;
 }
 .seg button + button {
-  border-left: 1.5px solid #8a9a9f;
+  border-left: 1.5px solid #6f8085;
 }
 .seg button[aria-pressed="true"] {
   background: var(--kai);
