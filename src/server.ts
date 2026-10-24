@@ -2,15 +2,17 @@ import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { compress } from "hono/compress";
 import { createAnthropicProvider } from "./ai/anthropic.js";
+import { runTriage } from "./ai/triage.js";
 import { createApp } from "./app.js";
 import { loadConfig } from "./config.js";
 import { connectPglite, connectPostgres } from "./db/index.js";
 import { migrate } from "./db/migrate.js";
-import { runNightlyIfDue } from "./demo.js";
+import { runNightlyIfDue, SCENARIOS } from "./demo.js";
 import { reconcilePayouts } from "./grants/payout-guard.js";
 import { log } from "./http/log.js";
 import { availableBalanceCents } from "./paypal/balances.js";
 import { createPayPalClient } from "./paypal/client.js";
+import { submitRequest } from "./requests.js";
 
 const PAGES: Record<string, string> = {
   "/": "/index.html",
@@ -54,6 +56,18 @@ async function main() {
         db,
         balanceCents: () => availableBalanceCents(pp),
         warn: (msg, f) => log.warn(msg, f),
+        afterReset: async () => {
+          for (const sc of SCENARIOS) {
+            const r = await submitRequest(db, config.HASH_SALT, sc.input, sc.clientKey);
+            await runTriage(
+              db,
+              provider,
+              { dailyCapUsd: config.AI_DAILY_CAP_USD, totalCapUsd: config.AI_TOTAL_CAP_USD },
+              r.id,
+              r.triageInput,
+            );
+          }
+        },
       })
         .then((did) => did && log.info("demo.reset"))
         .catch(() => log.error("demo.reset_failed"));

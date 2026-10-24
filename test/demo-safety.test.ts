@@ -175,7 +175,8 @@ describe("AI urgency orders the queue; it never decides money", () => {
         else if (
           p.endsWith(".ts") &&
           !p.startsWith(join("src", "ai")) &&
-          !p.endsWith(join("rules", "engine.ts"))
+          !p.endsWith(join("rules", "engine.ts")) &&
+          !p.endsWith(join("src", "demo.ts")) /* scenario (c) quotes an injection attempt */
         ) {
           for (const line of (await readFile(p, "utf8")).split("\n"))
             if (/urgency/.test(line)) hits.push(`${p}: ${line.trim()}`);
@@ -229,5 +230,25 @@ describe("nightly demo reset", () => {
       warn: (m) => warnings.push(m),
     });
     expect(warnings).toEqual(["paypal.balance_unavailable"]);
+  });
+});
+
+describe("daily demo scenarios", () => {
+  it("produce the intended rule outcomes", async () => {
+    const { SCENARIOS } = await import("../src/demo.js");
+    await seedDemo(db);
+    const out: Record<string, string[]> = {};
+    for (const sc of SCENARIOS) {
+      const r = await submitRequest(db, SALT, sc.input, sc.clientKey);
+      out[sc.label] = r.rules
+        .filter((x) => x.outcome !== "pass")
+        .map((x) => `${x.ruleId}:${x.outcome}`);
+    }
+    expect(out).toEqual({
+      "a-urgent-legit": [],
+      "b-duplicate": ["R2:block", "R3:flag"],
+      "c-injection": ["R5:flag", "R6:flag"],
+      "d-vietnamese": [],
+    });
   });
 });
