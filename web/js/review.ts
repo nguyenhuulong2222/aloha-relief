@@ -124,6 +124,8 @@ const chip = (cls: string, text: string) => el("span", { class: `chip ${cls}` },
 
 let current: string | null = null;
 let rows: QueueRow[] = [];
+/** Request and payout status of the request currently on screen, to spot changes on refresh. */
+let shown = "";
 
 async function boot() {
   const me = await api<{ name?: string }>("/api/review/me");
@@ -189,7 +191,7 @@ async function loadQueue() {
       row &&
       (!row.triage_status ||
         ["paying", "approved"].includes(row.status) ||
-        row.payout_status === "pending")
+        `${row.status}|${row.payout_status ?? ""}` !== shown)
     ) {
       void openRequest(current, false);
     }
@@ -255,6 +257,7 @@ async function openRequest(ref: string, focus = true) {
   // Don't clobber a reason the reviewer is typing during auto-refresh.
   const typing = (document.getElementById("reason") as HTMLTextAreaElement | null)?.value ?? "";
   detail.replaceChildren(...renderDetail(res.data));
+  shown = `${res.data.request.status}|${res.data.payout?.status ?? ""}`;
   const reason = document.getElementById("reason") as HTMLTextAreaElement | null;
   if (reason && typing) reason.value = typing;
   if (focus) detail.focus();
