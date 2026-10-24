@@ -47,7 +47,7 @@ async function paidRequest() {
     reviewerName: "Ana",
     reason: "Verified.",
   });
-  await payApprovedGrant(db, pp, a, { dailyCapCents: 1_000_000 });
+  await payApprovedGrant(db, pp, a, { dailyCapCents: 1_000_000, perGrantCapCents: 50_000 });
   return r;
 }
 

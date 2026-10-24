@@ -91,7 +91,7 @@ export const TEST_CONFIG = {
   AI_DAILY_CAP_USD: 0.5,
   AI_TOTAL_CAP_USD: 4,
   DAILY_PAYOUT_CAP_CENTS: 300_000,
-  PER_GRANT_CAP_CENTS: 50_000,
+  PER_GRANT_CAP_CENTS: 40_000,
   PUBLIC_BASE_URL: "http://localhost:3000",
   NODE_ENV: "test" as const,
 };

@@ -9,8 +9,11 @@ export function centsToValue(cents: number): string {
   return (cents / 100).toFixed(2);
 }
 
+/** "12.34" -> 1234. Strict: anything that isn't a plain decimal amount becomes NaN. */
 export function valueToCents(value: string): number {
-  return Math.round(Number.parseFloat(value) * 100);
+  if (!/^\d+(\.\d{1,2})?$/.test(value)) return Number.NaN;
+  const [whole = "0", frac = ""] = value.split(".");
+  return Number(whole) * 100 + Number(frac.padEnd(2, "0"));
 }
 
 export interface CreatedOrder {
@@ -54,6 +57,7 @@ export interface CaptureResult {
   captureId: string | null;
   captureStatus: string | null;
   amountCents: number | null;
+  currency: string | null;
 }
 
 interface OrderCaptureResponse {
@@ -61,7 +65,11 @@ interface OrderCaptureResponse {
   status: string;
   purchase_units?: Array<{
     payments?: {
-      captures?: Array<{ id: string; status: string; amount?: { value: string } }>;
+      captures?: Array<{
+        id: string;
+        status: string;
+        amount?: { value: string; currency_code?: string };
+      }>;
     };
   }>;
 }
@@ -78,6 +86,7 @@ export async function captureOrder(pp: PayPalClient, orderId: string): Promise<C
     captureId: cap?.id ?? null,
     captureStatus: cap?.status ?? null,
     amountCents: cap?.amount ? valueToCents(cap.amount.value) : null,
+    currency: cap?.amount?.currency_code ?? null,
   };
 }
 
@@ -92,5 +101,6 @@ export async function getOrderCapture(pp: PayPalClient, orderId: string): Promis
     captureId: cap?.id ?? null,
     captureStatus: cap?.status ?? null,
     amountCents: cap?.amount ? valueToCents(cap.amount.value) : null,
+    currency: cap?.amount?.currency_code ?? null,
   };
 }

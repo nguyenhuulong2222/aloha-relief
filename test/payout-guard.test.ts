@@ -14,7 +14,7 @@ import {
   VALID_REQUEST,
 } from "./helpers.js";
 
-const CAP = { dailyCapCents: 300_000 };
+const CAP = { dailyCapCents: 300_000, perGrantCapCents: 50_000 };
 const SALT = "salt-salt-salt-salt";
 
 let db: Db;
@@ -167,7 +167,7 @@ describe("no payout without a recorded human approval", () => {
     const r = await newRequest();
     const approvalId = await approve(r.id);
     await expect(
-      payApprovedGrant(db, pp, approvalId, { dailyCapCents: 10_000 }),
+      payApprovedGrant(db, pp, approvalId, { dailyCapCents: 10_000, perGrantCapCents: 50_000 }),
     ).rejects.toMatchObject({ code: "DAILY_CAP" });
   });
 });

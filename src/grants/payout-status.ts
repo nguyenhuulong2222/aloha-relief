@@ -79,7 +79,10 @@ export async function applyPayoutStatus(
       [key.payoutBatchId ?? null, key.payoutItemId ?? null],
     );
     if (!p) return null;
-    const keepFinal = FINAL.has(p.status) && status !== "returned" && status !== "refunded";
+    const keepFinal =
+      (FINAL.has(p.status) && status !== "returned" && status !== "refunded") ||
+      // A late batch PROCESSING must not overwrite a more specific item state.
+      (status === "processing" && !["creating", "pending"].includes(p.status));
     if (p.status === status || keepFinal) {
       if (key.payoutItemId && !p.payout_item_id) {
         await t.query(`update payouts set payout_item_id = $2 where id = $1`, [

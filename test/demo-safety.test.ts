@@ -72,7 +72,9 @@ describe("public demo payout limits", () => {
   it("re-checks the need cap even if the stored amount changed after the rules ran", async () => {
     const { r, a } = await approved({ amountUsd: 100, needType: "food" });
     await db.query(`update requests set amount_cents = 90000 where id = $1`, [r.id]);
-    await expect(payApprovedGrant(db, pp, a, { dailyCapCents: 10_000_000 })).rejects.toMatchObject({
+    await expect(
+      payApprovedGrant(db, pp, a, { dailyCapCents: 10_000_000, perGrantCapCents: 50_000 }),
+    ).rejects.toMatchObject({
       code: "GRANT_CAP",
     });
     expect(payoutPosts()).toHaveLength(0);

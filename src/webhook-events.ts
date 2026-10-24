@@ -7,6 +7,7 @@ import { captureDonation, markDonationByCapture } from "./donations.js";
 import { applyPayoutStatus, PAYOUT_EVENT_STATUS } from "./grants/payout-status.js";
 import { log } from "./http/log.js";
 import type { PayPalClient } from "./paypal/client.js";
+import { valueToCents } from "./paypal/orders.js";
 import { verifyWebhookSignature, type WebhookHeaders } from "./paypal/webhooks.js";
 
 interface WebhookEvent {
@@ -80,7 +81,13 @@ export async function handleWebhook(
       : type.endsWith("PENDING")
         ? "pending"
         : "denied";
-    if (resourceId) await markDonationByCapture(db, resourceId, related?.order_id ?? null, status);
+    const amt = r.amount as { value?: string; currency_code?: string } | undefined;
+    const amount =
+      amt?.value && amt.currency_code
+        ? { cents: valueToCents(amt.value), currency: amt.currency_code }
+        : undefined;
+    if (resourceId)
+      await markDonationByCapture(db, resourceId, related?.order_id ?? null, status, amount);
   } else if (type === "PAYMENT.CAPTURE.REFUNDED" || type === "PAYMENT.CAPTURE.REVERSED") {
     const captureId = upLinkId(r, "captures") ?? resourceId;
     if (captureId) await markDonationByCapture(db, captureId, null, "refunded");

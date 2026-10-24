@@ -47,7 +47,8 @@ const SESSION_COOKIE = "ar_reviewer";
 const SESSION_HOURS = 12;
 
 function clientKey(c: Context): string {
-  const xff = c.req.header("x-forwarded-for")?.split(",")[0]?.trim();
+  // The last X-Forwarded-For hop is appended by the host's proxy; earlier hops are client-supplied.
+  const xff = c.req.header("x-forwarded-for")?.split(",").at(-1)?.trim();
   return `${xff || "local"}|${c.req.header("user-agent") ?? ""}`;
 }
 
@@ -63,6 +64,8 @@ export function createApp(deps: AppDeps) {
   const requestLimiter = new RateLimiter(5, 60 * 60 * 1000);
   const donationLimiter = new RateLimiter(30, 60 * 60 * 1000);
   const loginLimiter = new RateLimiter(10, 15 * 60 * 1000);
+  const statusLimiter = new RateLimiter(60, 60 * 60 * 1000);
+  const captureLimiter = new RateLimiter(30, 60 * 60 * 1000);
   const budget = { dailyCapUsd: config.AI_DAILY_CAP_USD, totalCapUsd: config.AI_TOTAL_CAP_USD };
 
   const triage = (requestId: string, input: TriageInput) =>
@@ -112,6 +115,7 @@ export function createApp(deps: AppDeps) {
 
   app.post("/api/donations/:orderId/capture", async (c) => {
     const orderId = c.req.param("orderId");
+    if (!captureLimiter.allow(clientKey(c))) return c.json({ error: "rate_limited" }, 429);
     if (!/^[A-Z0-9]{8,32}$/.test(orderId)) return c.json({ error: "invalid_order" }, 400);
     try {
       return c.json(await captureDonation(db, pp, orderId));
@@ -142,13 +146,25 @@ export function createApp(deps: AppDeps) {
     return c.json({ ref: res.publicRef, status: "received" }, 201);
   });
 
+  // Coarse public states only: rule outcomes and reviewer actions stay private.
+  const PUBLIC_STATUS: Record<string, string> = {
+    submitted: "in_review",
+    blocked: "in_review",
+    needs_info: "in_review",
+    approved: "approved",
+    paying: "approved",
+    paid: "paid",
+    failed: "approved",
+    declined: "closed",
+  };
   app.get("/api/requests/:ref/status", async (c) => {
+    if (!statusLimiter.allow(clientKey(c))) return c.json({ error: "rate_limited" }, 429);
     const [r] = await db.query<{ status: string }>(
       `select status from requests where public_ref = $1`,
       [c.req.param("ref")],
     );
     return r
-      ? c.json({ ref: c.req.param("ref"), status: r.status })
+      ? c.json({ ref: c.req.param("ref"), status: PUBLIC_STATUS[r.status] ?? "in_review" })
       : c.json({ error: "not_found" }, 404);
   });
 
@@ -330,6 +346,7 @@ export function createApp(deps: AppDeps) {
     try {
       return await payApprovedGrant(db, pp, approvalId, {
         dailyCapCents: config.DAILY_PAYOUT_CAP_CENTS,
+        perGrantCapCents: config.PER_GRANT_CAP_CENTS,
       });
     } catch (e) {
       if (e instanceof GuardError) return { payoutId: null, status: "refused", errorCode: e.code };

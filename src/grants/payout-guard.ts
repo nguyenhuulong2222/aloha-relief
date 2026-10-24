@@ -44,8 +44,8 @@ interface Reserved {
 export interface GuardLimits {
   /** Max total paid out per UTC day (public-demo safety). */
   dailyCapCents: number;
-  /** Max per single grant, on top of the per-need cap (public-demo safety). */
-  perGrantCapCents?: number;
+  /** Max per single grant, on top of the per-need cap (public-demo safety). Required on purpose. */
+  perGrantCapCents: number;
 }
 
 async function reserve(db: Db, approvalId: string, limits: GuardLimits): Promise<Reserved> {
@@ -81,15 +81,13 @@ async function reserve(db: Db, approvalId: string, limits: GuardLimits): Promise
     if (a.has_payout) throw new GuardError("ALREADY_PAID");
     if (a.status !== "approved") throw new GuardError("NOT_APPROVED_STATE");
     // Re-check the amount here, independently of rule R1: the guard trusts nothing upstream.
-    const grantCap = Math.min(
-      NEED_CAPS[a.need_type] ?? 0,
-      limits.perGrantCapCents ?? Number.POSITIVE_INFINITY,
-    );
+    const grantCap = Math.min(NEED_CAPS[a.need_type] ?? 0, limits.perGrantCapCents);
     if (!(a.amount_cents > 0) || a.amount_cents > grantCap) throw new GuardError("GRANT_CAP");
     if ((await availableCents(t)) < a.amount_cents) throw new GuardError("INSUFFICIENT_FUNDS");
     const [today] = await t.query<{ cents: number }>(
       `select coalesce(sum(amount_cents), 0)::int as cents from payouts
-        where created_at >= date_trunc('day', now()) and is_seed = false
+        where created_at >= (date_trunc('day', now() at time zone 'Pacific/Honolulu') at time zone 'Pacific/Honolulu')
+          and is_seed = false
           and status not in ('failed', 'denied', 'canceled', 'blocked')`,
     );
     if ((today?.cents ?? 0) + a.amount_cents > limits.dailyCapCents)
@@ -139,7 +137,8 @@ async function send(db: Db, pp: PayPalClient, r: Reserved): Promise<PayResult> {
     const code = pe?.name_ ?? "NETWORK_ERROR";
     // 4xx is a definitive refusal from PayPal. Anything else may have gone through: keep the row in
     // 'creating' so reconcile retries with the same sender_batch_id (PayPal dedupes it).
-    const definitive = pe !== null && pe.httpStatus >= 400 && pe.httpStatus < 500;
+    // Only clear refusals are final. 401/408/429 (token, timeout, rate limit) are retried by reconcile.
+    const definitive = pe !== null && [400, 403, 404, 409, 422].includes(pe.httpStatus);
     await db.query(
       `update payouts set status = $2, error_code = $3, updated_at = now() where id = $1`,
       [r.payoutId, definitive ? "failed" : "creating", code],

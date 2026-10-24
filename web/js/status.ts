@@ -1,14 +1,11 @@
 import { $, api, el } from "./common.js";
 
 const LABEL: Record<string, string> = {
-  submitted: "Received. A volunteer will review it soon.",
-  blocked: "Received. A volunteer will review it soon.",
-  needs_info: "A volunteer needs more information. They'll reach out.",
-  approved: "Approved. The grant is being prepared.",
-  paying: "Approved. PayPal is sending the grant.",
+  in_review:
+    "Received. A volunteer is reviewing it. If they need more information, they'll reach out.",
+  approved: "Approved. PayPal is sending the grant.",
   paid: "Paid. Check your PayPal account.",
-  declined: "This request wasn't approved.",
-  failed: "Approved, but PayPal couldn't deliver the grant. A volunteer will follow up.",
+  closed: "This request is closed and wasn't approved.",
 };
 
 const input = $<HTMLInputElement>("#ref");

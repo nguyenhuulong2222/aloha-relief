@@ -50,8 +50,9 @@ const CAPTURE_STATUS: Record<string, string> = {
 async function applyCapture(db: Db, ref: string, expectedCents: number, c: CaptureResult) {
   const status = c.captureStatus ? CAPTURE_STATUS[c.captureStatus] : undefined;
   if (!status || !c.captureId) return null;
-  if (c.amountCents !== null && c.amountCents !== expectedCents)
+  if (c.amountCents !== expectedCents || (c.currency !== null && c.currency !== "USD")) {
     throw new DonationError("AMOUNT_MISMATCH");
+  }
   await db.query(
     `update donations set status = $2, capture_id = $3,
             captured_at = case when $2 = 'captured' then coalesce(captured_at, now()) else captured_at end
@@ -95,12 +96,16 @@ export async function markDonationByCapture(
   captureId: string,
   orderId: string | null,
   status: string,
+  amount?: { cents: number; currency: string },
 ) {
+  // Never move backwards (a late PENDING/DENIED after COMPLETED), and only credit a capture whose
+  // amount and currency match the order we created.
   await db.query(
     `update donations set status = $3, capture_id = coalesce(capture_id, $1),
             captured_at = case when $3 = 'captured' then coalesce(captured_at, now()) else captured_at end
       where (capture_id = $1 or ($2::text is not null and paypal_order_id = $2))
-        and not (status = 'refunded' and $3 <> 'refunded')`,
-    [captureId, orderId, status],
+        and (status not in ('captured', 'refunded') or $3 = 'refunded')
+        and ($3 <> 'captured' or ($4::int is not null and amount_cents = $4 and currency = $5))`,
+    [captureId, orderId, status, amount?.cents ?? null, amount?.currency ?? null],
   );
 }
