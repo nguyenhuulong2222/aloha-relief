@@ -25,7 +25,7 @@ export interface PayPalClientOptions {
 }
 
 export interface PayPalRequest {
-  method?: "GET" | "POST" | "PATCH";
+  method?: "GET" | "POST" | "PATCH" | "DELETE";
   /** JSON-serializable body, or a pre-serialized JSON string (sent byte-for-byte). */
   body?: unknown;
   requestId?: string;

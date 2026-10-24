@@ -1,0 +1,39 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Free web service in Oregon. The database is Neon free Postgres (Render's free Postgres expires after
+# 30 days, which would fall inside the hackathon judging window), so DATABASE_URL is a secret you paste in.
+services:
+  - type: web
+    name: aloha-relief
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: node --enable-source-maps dist/server.js
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PAYPAL_ENV
+        value: sandbox
+      - key: AI_MODEL
+        value: claude-haiku-5-5
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: HASH_SALT
+        generateValue: true
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_WEBHOOK_ID
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: REVIEWER_PASSCODE
+        sync: false
+      - key: PUBLIC_BASE_URL
+        sync: false
