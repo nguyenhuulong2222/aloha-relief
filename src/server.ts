@@ -1,5 +1,6 @@
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
+import { compress } from "hono/compress";
 import { createAnthropicProvider } from "./ai/anthropic.js";
 import { createApp } from "./app.js";
 import { loadConfig } from "./config.js";
@@ -37,6 +38,7 @@ async function main() {
 
   const app = createApp({ db, pp, provider, config });
   const webRoot = new URL("./web", import.meta.url).pathname;
+  app.use("/*", compress());
   app.use("/*", serveStatic({ root: webRoot, rewriteRequestPath: (p) => PAGES[p] ?? p }));
   app.notFound((c) => c.text("Not found", 404));
 

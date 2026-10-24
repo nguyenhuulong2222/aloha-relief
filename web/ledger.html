@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Public ledger · Aloha Relief</title>
+<meta name="description" content="Every donation in and every grant out of the fictional Kanaloa Relief Fund, with no personal data.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="demo-banner" role="note"><strong>Demo:</strong> sandbox money, fictional people and data. No real payments happen here.</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Aloha Relief <span>for Kanaloa Relief Fund</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/donate">Give</a>
+      <a href="/request">Ask for help</a>
+      <a href="/ledger" aria-current="page">Ledger</a>
+      <a href="/review">Volunteers</a>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+  <h1>Public ledger</h1>
+  <p>Every donation into the Kanaloa Relief Fund and every grant out of it, as it happens. Grants show the type of need, island, amount and PayPal status. Names, emails, stories and PayPal account details never appear here.</p>
+
+  <section class="health" aria-labelledby="health-h">
+    <h2 id="health-h" class="visually-hidden">Fund health</h2>
+    <dl class="stats" aria-live="polite">
+      <div><dt>Given</dt><dd id="s-in">–</dd></div>
+      <div><dt>Granted</dt><dd id="s-out">–</dd></div>
+      <div><dt>On the way</dt><dd id="s-pending">–</dd></div>
+      <div><dt>Available</dt><dd id="s-avail">–</dd></div>
+      <div><dt>Grants paid</dt><dd id="s-grants">–</dd></div>
+      <div><dt>Waiting for review</dt><dd id="s-waiting">–</dd></div>
+      <div><dt>Average time to grant</dt><dd id="s-time">–</dd></div>
+    </dl>
+    <div class="fund-bar" aria-hidden="true"><span class="out" id="bar-out"></span><span class="pending" id="bar-pending"></span><span class="avail" id="bar-avail"></span></div>
+  </section>
+
+  <section aria-labelledby="table-h">
+    <h2 id="table-h" class="visually-hidden">Ledger entries</h2>
+    <div class="ledger-tools">
+      <div class="seg" role="group" aria-label="Show">
+        <button type="button" data-kind="" aria-pressed="true">Everything</button>
+        <button type="button" data-kind="donation" aria-pressed="false">Donations</button>
+        <button type="button" data-kind="grant" aria-pressed="false">Grants</button>
+      </div>
+      <label class="tool"><span>Island</span>
+        <select id="f-island"><option value="">All islands</option><option value="maui">Maui</option><option value="molokai">Molokaʻi</option><option value="lanai">Lānaʻi</option><option value="hawaii">Hawaiʻi Island</option><option value="oahu">Oʻahu</option><option value="kauai">Kauaʻi</option></select>
+      </label>
+      <label class="tool"><span>Status</span>
+        <select id="f-status"><option value="">Any status</option><option value="done">Received or paid</option><option value="moving">On the way</option><option value="problem">Failed or returned</option></select>
+      </label>
+      <label class="tool grow"><span>Search</span><input id="f-search" type="search" placeholder="Ref, need, island…"></label>
+      <button type="button" class="btn secondary" id="export">Download CSV</button>
+    </div>
+    <p class="hint" id="row-count" aria-live="polite"></p>
+    <div id="grid" class="grid" aria-label="Ledger table"></div>
+    <p class="hint" style="margin-top:12px"><b>Sandbox</b> rows are real PayPal sandbox transactions made in this demo. <b>Seeded</b> rows are fictional history added so the fund doesn't start empty; they never touched PayPal.</p>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Rules check. AI explains. People decide. Aloha Relief is an open-source hackathon demo (MIT). The Kanaloa Relief Fund and everyone in it are fictional.</p>
+  </div>
+</footer>
+<script type="module" src="/js/ledger.js"></script>
+</body>
+</html>
