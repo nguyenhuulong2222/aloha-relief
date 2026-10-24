@@ -19,6 +19,8 @@ services:
         value: sandbox
       - key: AI_MODEL
         value: claude-haiku-5-5
+      - key: DEMO_NIGHTLY_RESET
+        value: "1"
       - key: SESSION_SECRET
         generateValue: true
       - key: HASH_SALT

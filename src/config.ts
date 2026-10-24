@@ -16,7 +16,10 @@ const EnvSchema = z.object({
   REVIEWER_PASSCODE: z.string().min(6),
   SESSION_SECRET: z.string().min(32),
   HASH_SALT: z.string().min(16),
-  DAILY_PAYOUT_CAP_CENTS: z.coerce.number().int().positive().default(300_000),
+  // Public-demo safety: anyone with the published passcode can approve sandbox payouts.
+  DAILY_PAYOUT_CAP_CENTS: z.coerce.number().int().positive().default(50_000),
+  PER_GRANT_CAP_CENTS: z.coerce.number().int().positive().default(40_000),
+  DEMO_NIGHTLY_RESET: z.enum(["0", "1"]).default("0"),
 });
 
 export type Config = z.infer<typeof EnvSchema>;

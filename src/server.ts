@@ -5,8 +5,10 @@ import { createApp } from "./app.js";
 import { loadConfig } from "./config.js";
 import { connectPglite, connectPostgres } from "./db/index.js";
 import { migrate } from "./db/migrate.js";
+import { runNightlyIfDue } from "./demo.js";
 import { reconcilePayouts } from "./grants/payout-guard.js";
 import { log } from "./http/log.js";
+import { availableBalanceCents } from "./paypal/balances.js";
 import { createPayPalClient } from "./paypal/client.js";
 
 const PAGES: Record<string, string> = {
@@ -42,6 +44,20 @@ async function main() {
   setInterval(() => {
     reconcilePayouts(db, pp).catch(() => log.warn("payout.reconcile_failed"));
   }, 60_000).unref();
+
+  if (config.DEMO_NIGHTLY_RESET === "1") {
+    // Public demo: once per Hawaii day, restore seeded data and check the sandbox balance.
+    const nightly = () =>
+      runNightlyIfDue({
+        db,
+        balanceCents: () => availableBalanceCents(pp),
+        warn: (msg, f) => log.warn(msg, f),
+      })
+        .then((did) => did && log.info("demo.reset"))
+        .catch(() => log.error("demo.reset_failed"));
+    setTimeout(nightly, 5_000).unref();
+    setInterval(nightly, 10 * 60_000).unref();
+  }
 
   serve({ fetch: app.fetch, port: config.PORT }, (info) => {
     log.info("server.started", {

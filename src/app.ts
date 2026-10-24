@@ -35,6 +35,7 @@ export interface AppDeps {
     | "AI_DAILY_CAP_USD"
     | "AI_TOTAL_CAP_USD"
     | "DAILY_PAYOUT_CAP_CENTS"
+    | "PER_GRANT_CAP_CENTS"
     | "PUBLIC_BASE_URL"
     | "NODE_ENV"
   >;
@@ -85,7 +86,14 @@ export function createApp(deps: AppDeps) {
 
   // ---------- public API ----------
   app.get("/api/config", (c) =>
-    c.json({ paypalClientId: config.PAYPAL_CLIENT_ID, paypalEnv: "sandbox" }),
+    c.json({
+      paypalClientId: config.PAYPAL_CLIENT_ID,
+      paypalEnv: "sandbox",
+      demoLimits: {
+        perGrantCents: config.PER_GRANT_CAP_CENTS,
+        dailyCents: config.DAILY_PAYOUT_CAP_CENTS,
+      },
+    }),
   );
 
   app.post("/api/donations", async (c) => {

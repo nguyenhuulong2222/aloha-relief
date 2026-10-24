@@ -9,6 +9,7 @@ import { availableCents } from "../fund.js";
 import { log } from "../http/log.js";
 import { type PayPalClient, PayPalError } from "../paypal/client.js";
 import { createPayout, getPayoutBatch } from "../paypal/payouts.js";
+import { NEED_CAPS, type NeedType } from "../rules/engine.js";
 import { applyPayoutStatus, mapItemStatus } from "./payout-status.js";
 
 export type GuardCode =
@@ -17,7 +18,8 @@ export type GuardCode =
   | "BLOCKED"
   | "ALREADY_PAID"
   | "INSUFFICIENT_FUNDS"
-  | "DAILY_CAP";
+  | "DAILY_CAP"
+  | "GRANT_CAP";
 
 export class GuardError extends Error {
   constructor(readonly code: GuardCode) {
@@ -39,7 +41,14 @@ interface Reserved {
   amountCents: number;
 }
 
-async function reserve(db: Db, approvalId: string, dailyCapCents: number): Promise<Reserved> {
+export interface GuardLimits {
+  /** Max total paid out per UTC day (public-demo safety). */
+  dailyCapCents: number;
+  /** Max per single grant, on top of the per-need cap (public-demo safety). */
+  perGrantCapCents?: number;
+}
+
+async function reserve(db: Db, approvalId: string, limits: GuardLimits): Promise<Reserved> {
   return db.tx(async (t) => {
     await t.query(`select pg_advisory_xact_lock(4242002)`);
     const [a] = await t.query<{
@@ -52,11 +61,12 @@ async function reserve(db: Db, approvalId: string, dailyCapCents: number): Promi
       public_ref: string;
       payee_email: string;
       amount_cents: number;
+      need_type: NeedType;
       blocked: boolean;
       has_payout: boolean;
     }>(
       `select a.id as approval_id, a.decision, a.reviewer_name, a.reason, r.id as request_id, r.status,
-              r.public_ref, r.payee_email, r.amount_cents,
+              r.public_ref, r.payee_email, r.amount_cents, r.need_type,
               exists (select 1 from rule_results x where x.request_id = r.id and x.outcome = 'block') as blocked,
               exists (select 1 from payouts p where p.request_id = r.id) as has_payout
          from approvals a join requests r on r.id = a.request_id
@@ -70,13 +80,20 @@ async function reserve(db: Db, approvalId: string, dailyCapCents: number): Promi
     if (a.blocked) throw new GuardError("BLOCKED");
     if (a.has_payout) throw new GuardError("ALREADY_PAID");
     if (a.status !== "approved") throw new GuardError("NOT_APPROVED_STATE");
+    // Re-check the amount here, independently of rule R1: the guard trusts nothing upstream.
+    const grantCap = Math.min(
+      NEED_CAPS[a.need_type] ?? 0,
+      limits.perGrantCapCents ?? Number.POSITIVE_INFINITY,
+    );
+    if (!(a.amount_cents > 0) || a.amount_cents > grantCap) throw new GuardError("GRANT_CAP");
     if ((await availableCents(t)) < a.amount_cents) throw new GuardError("INSUFFICIENT_FUNDS");
     const [today] = await t.query<{ cents: number }>(
       `select coalesce(sum(amount_cents), 0)::int as cents from payouts
         where created_at >= date_trunc('day', now()) and is_seed = false
           and status not in ('failed', 'denied', 'canceled', 'blocked')`,
     );
-    if ((today?.cents ?? 0) + a.amount_cents > dailyCapCents) throw new GuardError("DAILY_CAP");
+    if ((today?.cents ?? 0) + a.amount_cents > limits.dailyCapCents)
+      throw new GuardError("DAILY_CAP");
 
     const senderBatchId = `AR-${a.public_ref}-${approvalId.slice(0, 8)}`;
     const [p] = await t.query<{ id: string }>(
@@ -147,9 +164,9 @@ export async function payApprovedGrant(
   db: Db,
   pp: PayPalClient,
   approvalId: string,
-  opts: { dailyCapCents: number },
+  limits: GuardLimits,
 ): Promise<PayResult> {
-  const reserved = await reserve(db, approvalId, opts.dailyCapCents);
+  const reserved = await reserve(db, approvalId, limits);
   return send(db, pp, reserved);
 }
 

@@ -45,6 +45,7 @@ const envVars = [
   { key: "NODE_ENV", value: "production" },
   { key: "PAYPAL_ENV", value: "sandbox" },
   { key: "AI_MODEL", value: "claude-haiku-5-5" },
+  { key: "DEMO_NIGHTLY_RESET", value: "1" },
   { key: "PAYPAL_CLIENT_ID", value: env("PAYPAL_CLIENT_ID") },
   { key: "PAYPAL_CLIENT_SECRET", value: env("PAYPAL_CLIENT_SECRET") },
   { key: "ANTHROPIC_API_KEY", value: env("ANTHROPIC_API_KEY") },

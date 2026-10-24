@@ -156,3 +156,9 @@ create or replace view public_ledger as
          p.amount_cents, p.status, p.updated_at,
          case when p.is_seed then 'seeded' else 'sandbox' end
     from payouts p join requests r on r.id = p.request_id;
+
+create table if not exists demo_meta (
+  key text primary key,
+  value text not null,
+  updated_at timestamptz not null default now()
+);

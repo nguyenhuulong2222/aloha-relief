@@ -103,7 +103,10 @@ const FAIL: Record<string, string> = {
 const GUARD: Record<string, string> = {
   INSUFFICIENT_FUNDS:
     "The fund doesn't have enough available money yet. The approval is saved; pay once donations arrive.",
-  DAILY_CAP: "Today's payout limit for the demo is reached. The approval is saved; pay tomorrow.",
+  DAILY_CAP:
+    "The public demo's daily payout limit is reached. The approval is saved; it can be paid after the nightly reset.",
+  GRANT_CAP:
+    "This grant is above the public demo's per-grant limit, so it can't be paid here. The approval is saved.",
   BLOCKED: "A hard rule blocks this request. It can't be paid.",
   NO_APPROVAL: "There's no recorded approval for this request.",
   ALREADY_PAID: "This request already has a payout.",
@@ -611,4 +614,17 @@ function renderHistory(d: Detail): Node {
   );
 }
 
+async function showLimits() {
+  const { ok, data } = await api<{ demoLimits?: { perGrantCents: number; dailyCents: number } }>(
+    "/api/config",
+  );
+  if (!ok || !data.demoLimits) return;
+  for (const n of document.querySelectorAll<HTMLElement>("[data-limit]")) {
+    n.textContent = money(
+      n.dataset.limit === "grant" ? data.demoLimits.perGrantCents : data.demoLimits.dailyCents,
+    );
+  }
+}
+
+void showLimits();
 void boot();
