@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aloha Relief</title>
+<meta name="description" content="Small, supervised disaster micro-grants on PayPal: every dollar in and every grant out, in the open.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="demo-banner" role="note"><strong>Demo:</strong> sandbox money, fictional people and data. No real payments happen here.</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Aloha Relief <span>for Kanaloa Relief Fund</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/donate">Give</a>
+      <a href="/request">Ask for help</a>
+      <a href="/ledger">Ledger</a>
+      <a href="/review">Volunteers</a>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title">Every dollar in. Every grant out. Out in the open.</h1>
+    <p class="lede">After the 2023 Maui wildfires, help moved through personal payment links, crowdfunding pages and group chats. Donors couldn't see where money went, scams spread, and the same family could be paid twice while another waited. Aloha Relief is a small, supervised way for a community fund to do this better after the next disaster.</p>
+    <div class="fund" id="fund" aria-live="polite">
+      <p class="fund-total"><span id="fund-in">$0</span><small>given to the Kanaloa Relief Fund so far</small></p>
+      <div class="fund-bar" aria-hidden="true"><span class="out" id="bar-out"></span><span class="pending" id="bar-pending"></span><span class="avail" id="bar-avail"></span></div>
+      <ul class="fund-legend">
+        <li style="--c: var(--regrowth)">Granted <b id="fund-out">$0</b></li>
+        <li style="--c: var(--pua)">On the way <b id="fund-pending">$0</b></li>
+        <li style="--c: var(--kai)">Available <b id="fund-avail">$0</b></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="paths" aria-label="What you can do">
+    <div class="path">
+      <h2>Give</h2>
+      <p>Donate with PayPal. Your gift shows up on the public ledger within seconds, with no name attached.</p>
+      <a class="btn" href="/donate">Give with PayPal</a>
+    </div>
+    <div class="path">
+      <h2>Ask for help</h2>
+      <p>Tell us what you need in a few sentences. A volunteer reviews every request. Grants go to your PayPal account.</p>
+      <a class="btn secondary" href="/request">Ask for help</a>
+    </div>
+    <div class="path">
+      <h2>Check the ledger</h2>
+      <p>See every donation and every grant, its status and island. No names, emails or stories, ever.</p>
+      <a class="btn secondary" href="/ledger">Open the ledger</a>
+    </div>
+  </section>
+
+  <section aria-labelledby="how-title">
+    <h2 id="how-title" style="margin-top:56px">How a request becomes a grant</h2>
+    <ol class="flow">
+      <li><div><b>Someone asks for help.</b> Need, amount, island, a short description and a PayPal email.<div class="who">Requester</div></div></li>
+      <li><div><b>Rules check it.</b> Caps, duplicate payees, look-alike text, request bursts and hidden instructions are caught by plain, tested code.<div class="who">Deterministic rules</div></div></li>
+      <li><div><b>AI explains it.</b> Claude rates urgency, summarizes the need in plain words and explains every flag. It can't clear a rule or move money.<div class="who">Claude Haiku</div></div></li>
+      <li><div><b>A volunteer decides.</b> Approve, ask for more information or decline, always with a written reason.<div class="who">Human reviewer</div></div></li>
+      <li><div><b>PayPal pays it.</b> Approval sends a PayPal Payout. PayPal confirms delivery and the ledger updates.<div class="who">PayPal Payouts + webhooks</div></div></li>
+    </ol>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Rules check. AI explains. People decide. Aloha Relief is an open-source hackathon demo (MIT). The Kanaloa Relief Fund and everyone in it are fictional.</p>
+  </div>
+</footer>
+<script type="module" src="/js/home.js"></script>
+</body>
+</html>

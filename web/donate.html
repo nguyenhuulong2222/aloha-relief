@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Give with PayPal · Aloha Relief</title>
+<meta name="description" content="Donate to the fictional Kanaloa Relief Fund with PayPal (sandbox).">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="demo-banner" role="note"><strong>Demo:</strong> sandbox money, fictional people and data. No real payments happen here.</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Aloha Relief <span>for Kanaloa Relief Fund</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/donate" aria-current="page">Give</a>
+      <a href="/request">Ask for help</a>
+      <a href="/ledger">Ledger</a>
+      <a href="/review">Volunteers</a>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap narrow">
+  <h1>Give to the Kanaloa Relief Fund</h1>
+  <p>Your gift goes into one shared fund. Volunteers turn it into small grants for families who ask for help, and every dollar shows up on the <a href="/ledger">public ledger</a>. We don't store your name or email.</p>
+
+  <form id="donate-form" novalidate>
+    <fieldset class="field">
+      <legend>Amount</legend>
+      <div class="choice-row" id="amounts">
+        <label><input type="radio" name="amount" value="1000"> <span>$10</span></label>
+        <label><input type="radio" name="amount" value="2500" checked> <span>$25</span></label>
+        <label><input type="radio" name="amount" value="5000"> <span>$50</span></label>
+        <label><input type="radio" name="amount" value="10000"> <span>$100</span></label>
+        <label><input type="radio" name="amount" value="other"> <span>Other</span></label>
+      </div>
+    </fieldset>
+    <div class="field" id="other-wrap" hidden>
+      <label for="other-amount">Other amount in dollars</label>
+      <p class="hint" id="other-hint">Between $1 and $500 for this demo.</p>
+      <input id="other-amount" type="number" inputmode="decimal" min="1" max="500" step="1" aria-describedby="other-hint">
+    </div>
+  </form>
+
+  <div id="paypal-area">
+    <paypal-button id="paypal-button" type="pay" hidden></paypal-button>
+    <p id="sdk-loading" class="hint">Loading PayPal…</p>
+  </div>
+  <div id="donate-status" role="status" aria-live="polite"></div>
+
+  <details style="margin-top:32px">
+    <summary>Testing this demo?</summary>
+    <p>This page uses the PayPal sandbox. Log in with a sandbox personal account, such as the judge donor account in the <a href="https://github.com/nguyenhuulong2222/aloha-relief/blob/main/docs/testing-instructions.md">testing instructions</a>. No real money moves.</p>
+  </details>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Rules check. AI explains. People decide. Aloha Relief is an open-source hackathon demo (MIT). The Kanaloa Relief Fund and everyone in it are fictional.</p>
+  </div>
+</footer>
+<script type="module" src="/js/donate.js"></script>
+</body>
+</html>

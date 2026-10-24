@@ -1,0 +1,501 @@
+/* Aloha Relief. Palette drawn from post-fire Maui: basalt, ocean, regrowth, lehua, ash. */
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: url("/fonts/atkinson-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC,
+    U+2122, U+2212;
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: url("/fonts/atkinson-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC,
+    U+2122, U+2212;
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: url("/fonts/atkinson-latin-ext-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+  unicode-range:
+    U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: url("/fonts/atkinson-latin-ext-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+  unicode-range:
+    U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+  --basalt: #1d2a2f; /* text */
+  --basalt-2: #4a5a60; /* secondary text, 7.0:1 on ash */
+  --ash: #f3f5f4; /* page */
+  --surface: #ffffff;
+  --line: #d5dcda;
+  --kai: #0b5d73; /* ocean: primary actions, links */
+  --kai-deep: #07465a;
+  --kai-wash: #e3eff2;
+  --regrowth: #2f6b3d; /* paid, passes */
+  --regrowth-wash: #e4f0e6;
+  --lehua: #a3241c; /* blocks, errors */
+  --lehua-wash: #f8e6e4;
+  --pua: #8a5a00; /* flags (text) */
+  --pua-wash: #fbf0d6;
+  --radius-s: 4px;
+  --radius-m: 10px;
+  --font: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --measure: 68ch;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ash);
+  color: var(--basalt);
+  font: 400 1.0625rem / 1.55 var(--font);
+}
+/* Vietnamese diacritics (Latin Extended Additional) fall outside the bundled font subsets. */
+:lang(vi) {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+a {
+  color: var(--kai);
+  text-underline-offset: 0.18em;
+}
+a:hover {
+  color: var(--kai-deep);
+}
+:focus-visible {
+  outline: 3px solid var(--kai);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+  letter-spacing: -0.01em;
+}
+h1 {
+  font-size: clamp(2rem, 1.3rem + 3.2vw, 3.25rem);
+  font-weight: 700;
+  max-width: 18ch;
+}
+h2 {
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
+}
+h3 {
+  font-size: 1.125rem;
+}
+p {
+  margin: 0 0 1em;
+  max-width: var(--measure);
+}
+
+.skip {
+  position: absolute;
+  left: -999px;
+}
+.skip:focus {
+  left: 16px;
+  top: 8px;
+  background: var(--surface);
+  padding: 8px 12px;
+  z-index: 10;
+}
+
+/* Sandbox banner: present on every page, never dismissible. */
+.demo-banner {
+  background: var(--basalt);
+  color: #fff;
+  font-size: 0.9375rem;
+  padding: 8px 16px;
+  text-align: center;
+}
+.demo-banner strong {
+  color: #ffd98a;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.site-header .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding-block: 14px;
+}
+.brand {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--basalt);
+  text-decoration: none;
+}
+.brand span {
+  font-weight: 400;
+  color: var(--basalt-2);
+}
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+.site-nav a {
+  color: var(--basalt);
+  text-decoration: none;
+  padding: 6px 0;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a[aria-current="page"] {
+  border-bottom-color: var(--kai);
+  font-weight: 700;
+}
+
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-inline: 16px;
+}
+main {
+  padding-block: 32px 64px;
+}
+.narrow {
+  max-width: 720px;
+}
+
+.site-footer {
+  border-top: 1px solid var(--line);
+  color: var(--basalt-2);
+  font-size: 0.9375rem;
+  padding-block: 24px 40px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: var(--radius-s);
+  border: 2px solid var(--kai);
+  background: var(--kai);
+  color: #fff;
+  font: 700 1rem / 1.2 var(--font);
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn:hover {
+  background: var(--kai-deep);
+  border-color: var(--kai-deep);
+  color: #fff;
+}
+.btn.secondary {
+  background: transparent;
+  color: var(--kai);
+}
+.btn.secondary:hover {
+  background: var(--kai-wash);
+  color: var(--kai-deep);
+}
+.btn.danger {
+  background: transparent;
+  color: var(--lehua);
+  border-color: var(--lehua);
+}
+.btn.danger:hover {
+  background: var(--lehua-wash);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Forms */
+.field {
+  margin-bottom: 20px;
+}
+.field label,
+.field legend {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.field .hint {
+  color: var(--basalt-2);
+  font-size: 0.9375rem;
+  margin: -2px 0 8px;
+}
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1.5px solid #8a9a9f;
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  color: var(--basalt);
+  font: inherit;
+}
+textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.choice-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1.5px solid #8a9a9f;
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  font-weight: 400;
+  cursor: pointer;
+}
+.choice-row input:checked + span {
+  font-weight: 700;
+}
+.choice-row label:has(input:checked) {
+  border-color: var(--kai);
+  background: var(--kai-wash);
+}
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.check input {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  flex: none;
+}
+
+.notice {
+  border-left: 4px solid var(--kai);
+  background: var(--kai-wash);
+  padding: 12px 16px;
+  margin: 0 0 20px;
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+}
+.notice.error {
+  border-color: var(--lehua);
+  background: var(--lehua-wash);
+}
+.notice.success {
+  border-color: var(--regrowth);
+  background: var(--regrowth-wash);
+}
+.notice p:last-child {
+  margin-bottom: 0;
+}
+
+/* Fund bar: the signature element. Money in, split into granted / in flight / available. */
+.fund {
+  margin: 28px 0 8px;
+  max-width: 760px;
+}
+.fund-total {
+  font-size: clamp(2.5rem, 1.6rem + 4vw, 4.25rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.fund-total small {
+  display: block;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--basalt-2);
+  margin-top: 8px;
+}
+.fund-bar {
+  display: flex;
+  height: 18px;
+  margin: 20px 0 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--line);
+}
+.fund-bar span {
+  display: block;
+  height: 100%;
+  transition: width 600ms ease-out;
+}
+.fund-bar .out {
+  background: var(--regrowth);
+}
+.fund-bar .pending {
+  background: repeating-linear-gradient(135deg, var(--pua) 0 6px, #b88a2a 6px 12px);
+}
+.fund-bar .avail {
+  background: var(--kai);
+}
+.fund-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+}
+.fund-legend li::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  vertical-align: -1px;
+  border-radius: 2px;
+  background: var(--c);
+}
+.fund-legend b {
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fund-bar span {
+    transition: none;
+  }
+}
+
+/* Home */
+.hero {
+  padding-block: 16px 24px;
+}
+.hero .lede {
+  font-size: 1.1875rem;
+  color: var(--basalt-2);
+}
+.paths {
+  display: grid;
+  gap: 16px;
+  margin-top: 40px;
+}
+@media (min-width: 760px) {
+  .paths {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.path {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--kai);
+  padding: 20px;
+}
+.path:nth-child(2) {
+  border-top-color: var(--regrowth);
+}
+.path:nth-child(3) {
+  border-top-color: var(--basalt);
+}
+.path p {
+  color: var(--basalt-2);
+}
+
+.flow {
+  margin: 48px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  max-width: 760px;
+}
+.flow li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.flow li::before {
+  content: counter(step);
+  font-weight: 700;
+  color: var(--kai);
+  font-size: 1.25rem;
+}
+.flow .who {
+  color: var(--basalt-2);
+  font-size: 0.9375rem;
+}
+
+/* Status chips */
+.chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-s);
+  font-size: 0.875rem;
+  font-weight: 700;
+  background: var(--kai-wash);
+  color: var(--kai-deep);
+  white-space: nowrap;
+}
+.chip.block,
+.chip.failed,
+.chip.declined {
+  background: var(--lehua-wash);
+  color: var(--lehua);
+}
+.chip.flag,
+.chip.pending,
+.chip.paying,
+.chip.needs_info {
+  background: var(--pua-wash);
+  color: var(--pua);
+}
+.chip.pass,
+.chip.paid,
+.chip.succeeded,
+.chip.captured {
+  background: var(--regrowth-wash);
+  color: var(--regrowth);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
