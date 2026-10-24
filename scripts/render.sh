@@ -11,5 +11,5 @@ export REVIEWER_PASSCODE="$(kc aloha-relief-reviewer-passcode)"
 export SESSION_SECRET="$(kc aloha-relief-prod-session-secret)"
 export HASH_SALT="$(kc aloha-relief-prod-hash-salt)"
 export PAYPAL_WEBHOOK_ID="$(kc aloha-relief-webhook-id-prod)"
-export PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-}"
+export PUBLIC_BASE_URL="${PUBLIC_BASE_URL:-https://aloha-relief.onrender.com}"
 exec npx tsx scripts/deploy-render.ts
