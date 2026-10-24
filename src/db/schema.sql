@@ -162,3 +162,7 @@ create table if not exists demo_meta (
   value text not null,
   updated_at timestamptz not null default now()
 );
+
+-- Repair: early production rows stored triage JSON double-encoded (a jsonb string). Idempotent.
+update triage set result = (result #>> '{}')::jsonb where jsonb_typeof(result) = 'string';
+update ai_cache set result = (result #>> '{}')::jsonb where jsonb_typeof(result) = 'string';

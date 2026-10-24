@@ -78,7 +78,7 @@ export async function runTriage(
     await db.query(
       `insert into triage (request_id, status, failure_reason, prompt_version, model, input_hash, result,
                            input_tokens, output_tokens, cost_usd, cached)
-       values ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11)
+       values ($1, $2, $3, $4, $5, $6, $7::text::jsonb, $8, $9, $10, $11)
        on conflict (request_id) do update set status = excluded.status, failure_reason = excluded.failure_reason,
          model = excluded.model, input_hash = excluded.input_hash, result = excluded.result,
          input_tokens = excluded.input_tokens, output_tokens = excluded.output_tokens,
@@ -159,7 +159,7 @@ export async function runTriage(
     );
   }
   await db.query(
-    `insert into ai_cache (input_hash, result) values ($1, $2::jsonb) on conflict do nothing`,
+    `insert into ai_cache (input_hash, result) values ($1, $2::text::jsonb) on conflict do nothing`,
     [hash, JSON.stringify(out.result)],
   );
   const { result, partial } = postProcess(out.result, input.rules);
