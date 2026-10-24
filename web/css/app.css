@@ -499,3 +499,226 @@ fieldset {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+.lang-toggle {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+.lang-toggle .btn {
+  min-height: 36px;
+  padding: 6px 12px;
+  font-weight: 400;
+}
+.lang-toggle .btn[aria-pressed="true"] {
+  background: var(--kai-wash);
+  font-weight: 700;
+}
+.field-error {
+  color: var(--lehua);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  margin: 6px 0 0;
+}
+[aria-invalid="true"] {
+  border-color: var(--lehua) !important;
+}
+
+/* Reviewer console */
+.linklike {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--kai);
+  text-decoration: underline;
+  font: inherit;
+  cursor: pointer;
+}
+.console-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+.console {
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 900px) {
+  .console {
+    grid-template-columns: 340px 1fr;
+    align-items: start;
+  }
+  .queue {
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+  }
+}
+.queue-tools {
+  margin-bottom: 8px;
+}
+.queue ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.queue li + li {
+  border-top: 1px solid var(--line);
+}
+.queue button {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 2px 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-left: 4px solid transparent;
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.queue button[aria-current="true"] {
+  border-left-color: var(--kai);
+  background: var(--kai-wash);
+}
+.queue .ref {
+  font-weight: 700;
+}
+.queue .amt {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.queue .meta {
+  grid-column: 1 / -1;
+  color: var(--basalt-2);
+  font-size: 0.9375rem;
+}
+.urg {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  background: var(--line);
+  color: var(--basalt);
+}
+.urg[data-u="4"],
+.urg[data-u="5"] {
+  background: var(--lehua);
+  color: #fff;
+}
+.urg[data-u="3"] {
+  background: var(--pua-wash);
+  color: var(--pua);
+}
+
+.detail {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 20px;
+  min-height: 320px;
+}
+.detail .empty {
+  color: var(--basalt-2);
+}
+.detail section + section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: baseline;
+}
+.detail-head .big {
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  color: var(--basalt-2);
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.rules {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.rules th,
+.rules td {
+  text-align: left;
+  padding: 8px 8px 8px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.rules th {
+  font-weight: 700;
+}
+.ai {
+  border-left: 4px solid var(--kai);
+  padding-left: 16px;
+}
+.ai .summary {
+  font-size: 1.125rem;
+}
+.ai dl {
+  margin: 0;
+}
+.ai dt {
+  font-weight: 700;
+  margin-top: 12px;
+}
+.ai dd {
+  margin: 2px 0 0;
+}
+.ai .foot {
+  color: var(--basalt-2);
+  font-size: 0.875rem;
+  margin-top: 12px;
+}
+.alert-injection {
+  border: 2px solid var(--lehua);
+  background: var(--lehua-wash);
+  padding: 10px 14px;
+  margin: 12px 0;
+}
+.applicant {
+  white-space: pre-wrap;
+  background: var(--ash);
+  border: 1px dashed #8a9a9f;
+  padding: 12px 14px;
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+}
+.decide .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.9375rem;
+}
+.timeline li {
+  padding: 6px 0;
+}

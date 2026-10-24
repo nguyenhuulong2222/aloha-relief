@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ask for help · Aloha Relief</title>
+<meta name="description" content="Request a small relief grant from the fictional Kanaloa Relief Fund (sandbox demo).">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="demo-banner" role="note"><strong>Demo:</strong> sandbox money, fictional people and data. No real payments happen here.</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Aloha Relief <span>for Kanaloa Relief Fund</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/donate">Give</a>
+      <a href="/request" aria-current="page">Ask for help</a>
+      <a href="/ledger">Ledger</a>
+      <a href="/review">Volunteers</a>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap narrow">
+  <div class="lang-toggle" role="group" aria-label="Language / Ngôn ngữ">
+    <button type="button" class="btn secondary" data-lang="en" aria-pressed="true">English</button>
+    <button type="button" class="btn secondary" data-lang="vi" aria-pressed="false" lang="vi">Tiếng Việt</button>
+  </div>
+  <section id="form-section" lang="en">
+    <h1 data-i18n="title"></h1>
+    <p data-i18n="intro"></p>
+    <div id="form-errors" role="alert"></div>
+    <form id="request-form" novalidate>
+      <fieldset class="field">
+        <legend data-i18n="need"></legend>
+        <div class="choice-row">
+          <label><input type="radio" name="needType" value="food" required> <span data-i18n="need_food"></span></label><label><input type="radio" name="needType" value="shelter" required> <span data-i18n="need_shelter"></span></label><label><input type="radio" name="needType" value="transport" required> <span data-i18n="need_transport"></span></label>
+          <label><input type="radio" name="needType" value="medical" required> <span data-i18n="need_medical"></span></label><label><input type="radio" name="needType" value="utilities" required> <span data-i18n="need_utilities"></span></label><label><input type="radio" name="needType" value="other" required> <span data-i18n="need_other"></span></label>
+        </div>
+      </fieldset>
+      <div class="field">
+        <label for="island" data-i18n="island"></label>
+        <select id="island" name="island" required>
+          <option value="" data-i18n="island_pick"></option>
+          <option value="maui">Maui</option><option value="molokai">Molokaʻi</option><option value="lanai">Lānaʻi</option><option value="hawaii">Hawaiʻi Island</option><option value="oahu">Oʻahu</option><option value="kauai">Kauaʻi</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="amount" data-i18n="amount"></label>
+        <p class="hint" id="amount-hint" data-i18n="amount_hint"></p>
+        <input id="amount" name="amount" type="number" inputmode="decimal" min="1" step="1" required aria-describedby="amount-hint">
+      </div>
+      <div class="field">
+        <label for="description" data-i18n="desc"></label>
+        <p class="hint" id="desc-hint" data-i18n="desc_hint"></p>
+        <textarea id="description" name="description" maxlength="1000" required aria-describedby="desc-hint desc-count"></textarea>
+        <p class="hint" id="desc-count" aria-live="polite"></p>
+      </div>
+      <div class="field">
+        <label for="payee" data-i18n="payee"></label>
+        <p class="hint" id="payee-hint" data-i18n="payee_hint"></p>
+        <input id="payee" name="payee" type="email" autocomplete="email" required aria-describedby="payee-hint">
+      </div>
+      <div class="field check">
+        <input id="consent" name="consent" type="checkbox" required>
+        <label for="consent" data-i18n="consent" style="font-weight:400"></label>
+      </div>
+      <button class="btn" type="submit" data-i18n="submit"></button>
+    </form>
+  </section>
+  <div id="request-done" role="status" aria-live="polite" tabindex="-1"></div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Rules check. AI explains. People decide. Aloha Relief is an open-source hackathon demo (MIT). The Kanaloa Relief Fund and everyone in it are fictional.</p>
+  </div>
+</footer>
+<script type="module" src="/js/request.js"></script>
+</body>
+</html>

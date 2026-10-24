@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request status · Aloha Relief</title>
+<meta name="description" content="Check the status of a relief request.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="demo-banner" role="note"><strong>Demo:</strong> sandbox money, fictional people and data. No real payments happen here.</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Aloha Relief <span>for Kanaloa Relief Fund</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/donate">Give</a>
+      <a href="/request">Ask for help</a>
+      <a href="/ledger">Ledger</a>
+      <a href="/review">Volunteers</a>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap narrow">
+  <h1>Check a request</h1>
+  <form id="status-form">
+    <div class="field"><label for="ref">Request number</label><p class="hint" id="ref-hint">It looks like R-0042.</p><input id="ref" type="text" required pattern="R-[0-9]{4,}" aria-describedby="ref-hint"></div>
+    <button class="btn" type="submit">Check status</button>
+  </form>
+  <div id="status-out" role="status" aria-live="polite" style="margin-top:20px"></div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Rules check. AI explains. People decide. Aloha Relief is an open-source hackathon demo (MIT). The Kanaloa Relief Fund and everyone in it are fictional.</p>
+  </div>
+</footer>
+<script type="module" src="/js/status.js"></script>
+</body>
+</html>

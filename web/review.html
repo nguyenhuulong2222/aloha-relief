@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Volunteer console · Aloha Relief</title>
+<meta name="description" content="Volunteer reviewer console for the fictional Kanaloa Relief Fund (sandbox demo).">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="demo-banner" role="note"><strong>Demo:</strong> sandbox money, fictional people and data. No real payments happen here.</div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">Aloha Relief <span>for Kanaloa Relief Fund</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/donate">Give</a>
+      <a href="/request">Ask for help</a>
+      <a href="/ledger">Ledger</a>
+      <a href="/review" aria-current="page">Volunteers</a>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+  <section id="login" class="narrow" hidden>
+    <h1>Volunteer console</h1>
+    <p>Volunteers review requests here. The rules and the AI help, but you make every decision, and every decision needs a written reason.</p>
+    <p class="hint">Judges: the demo passcode is in the testing instructions.</p>
+    <div id="login-error" role="alert"></div>
+    <form id="login-form">
+      <div class="field"><label for="rev-name">Your name</label><p class="hint" id="rev-name-hint">Recorded with every decision you make.</p><input id="rev-name" type="text" autocomplete="name" required maxlength="60" aria-describedby="rev-name-hint"></div>
+      <div class="field"><label for="passcode">Volunteer passcode</label><input id="passcode" type="password" autocomplete="current-password" required></div>
+      <button class="btn" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <section id="console" hidden>
+    <div class="console-head">
+      <h1>Requests</h1>
+      <p class="hint">Signed in as <b id="me"></b>. <button type="button" class="linklike" id="logout">Sign out</button></p>
+    </div>
+    <div class="console">
+      <nav class="queue" aria-label="Request queue">
+        <div class="queue-tools">
+          <label for="queue-filter" class="visually-hidden">Show</label>
+          <select id="queue-filter">
+            <option value="open">Waiting for a decision</option>
+            <option value="all">All requests</option>
+          </select>
+        </div>
+        <ul id="queue-list"></ul>
+      </nav>
+      <article id="detail" class="detail" aria-live="polite" tabindex="-1">
+        <p class="empty">Choose a request from the list.</p>
+      </article>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Rules check. AI explains. People decide. Aloha Relief is an open-source hackathon demo (MIT). The Kanaloa Relief Fund and everyone in it are fictional.</p>
+  </div>
+</footer>
+<script type="module" src="/js/review.js"></script>
+</body>
+</html>

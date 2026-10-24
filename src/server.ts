@@ -15,6 +15,7 @@ const PAGES: Record<string, string> = {
   "/request": "/request.html",
   "/review": "/review.html",
   "/ledger": "/ledger.html",
+  "/status": "/status.html",
 };
 
 async function main() {
